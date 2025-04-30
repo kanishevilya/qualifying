@@ -1,4 +1,4 @@
-# 🧠 FlashCards App
+# 🧠 Qualifying FlashCards App
 
 Приложение для обучения с помощью флеш-карт. Построено на **React** (frontend) и **FastAPI** (backend).
 
