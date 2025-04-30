@@ -1,24 +1,29 @@
+## 🌐 Live Demo
+
+[https://qualifying-project.vercel.app](https://qualifying-project.vercel.app)
+
 # 🧠 Qualifying FlashCards App
 
-Приложение для обучения с помощью флеш-карт. Построено на **React** (frontend) и **FastAPI** (backend).
+A flashcard-based learning application built with **React** (frontend) and **FastAPI** (backend).
 
-## 🚀 Возможности
+## 🚀 Features
 
-- Управление карточками, тегами и группами
-- Режим локального хранилища (`isLocalStorage = true`)  
-  → данные сохраняются в `localStorage`
-- Режим сервера (`isLocalStorage = false`)  
-  → данные загружаются и сохраняются через API
-- Поддержка мок-данных при отсутствии соединения
-- Переворот всех карточек одним кликом
+- Manage cards, tags, and groups  
+- Local storage mode (`isLocalStorage = true`)  
+  → Data is stored in `localStorage`
+- Server mode (`isLocalStorage = false`)  
+  → Data is loaded and saved via API
+- Support for mock data when offline
+- Flip all cards with a single click
 
-## ⚙️ Стек технологий
+## ⚙️ Tech Stack
 
 - **Frontend**: React, TypeScript, Context API  
 - **Backend**: FastAPI, Axios
 
-## 📁 Структура
+## 📁 Structure
 
-- `types.ts` — описание моделей: `Card`, `Tag`, `Group`
-- `mock.ts` — начальные данные
-- `AppContext.tsx` — глобальное состояние приложения
+- `types.ts` — defines models: `Card`, `Tag`, `Group`
+- `mock.ts` — initial data
+- `AppContext.tsx` — global app state
+
