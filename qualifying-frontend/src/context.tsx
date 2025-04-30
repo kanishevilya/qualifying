@@ -8,10 +8,10 @@ import React, {
 } from "react";
 import { Card, Group, Tag } from "src/data/types";
 import { mockCards, mockGroups, mockTags } from "./data/mock";
-
 import axios from "axios";
 
 const API_URL = "http://localhost:8000";
+const isLocalStorage = true;
 
 interface AppContextProps {
   cards: Card[];
@@ -54,32 +54,60 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
+  const saveDataToLocalStorage = (dataType: string, data: string) => {
+    try {
+      localStorage.setItem(dataType, data);
+    } catch (error) {
+      console.error("Error saving data to localStorage:", error);
+    }
+  };
+
+  const loadDataFromLocalStorage = (dataType: string) => {
+    try {
+      const data = localStorage.getItem(dataType);
+      return data && data !== "[]" ? JSON.parse(data) : null;
+    } catch (error) {
+      console.error("Error loading data from localStorage:", error);
+      return null;
+    }
+  };
+
   useEffect(() => {
     async function loadData() {
       try {
-        const cards_ =
-          (await axios.get(`${API_URL}/get_cards`)).data["cards"] || [];
-        const tags_ =
-          (await axios.get(`${API_URL}/get_tags`)).data["tags"] || [];
-        const groups_ =
-          (await axios.get(`${API_URL}/get_groups`)).data["groups"] || [];
+        let cardsData: Card[] = [];
+        let tagsData: Tag[] = [];
+        let groupsData: Group[] = [];
 
-        setCards(
-          cards_ && cards_ != "[]" && cards_.length > 0
-            ? JSON.parse(cards_)
-            : mockCards
-        );
-        setTags(
-          tags_ && tags_ != "[]" && cards_.length > 0
-            ? JSON.parse(tags_)
-            : mockTags
-        );
+        if (isLocalStorage) {
+          cardsData = loadDataFromLocalStorage("cards") || mockCards;
+          tagsData = loadDataFromLocalStorage("tags") || mockTags;
+          groupsData = loadDataFromLocalStorage("groups") || mockGroups;
+        } else {
+          const cards_ =
+            (await axios.get(`${API_URL}/get_cards`)).data["cards"] || [];
+          const tags_ =
+            (await axios.get(`${API_URL}/get_tags`)).data["tags"] || [];
+          const groups_ =
+            (await axios.get(`${API_URL}/get_groups`)).data["groups"] || [];
 
-        setGroups(
-          groups_ && groups_ != "[]" && cards_.length > 0
-            ? JSON.parse(groups_)
-            : mockGroups
-        );
+          cardsData =
+            cards_ && cards_ !== "[]" && cards_.length > 0
+              ? JSON.parse(cards_)
+              : mockCards;
+          tagsData =
+            tags_ && tags_ !== "[]" && tags_.length > 0
+              ? JSON.parse(tags_)
+              : mockTags;
+          groupsData =
+            groups_ && groups_ !== "[]" && groups_.length > 0
+              ? JSON.parse(groups_)
+              : mockGroups;
+        }
+
+        setCards(cardsData);
+        setTags(tagsData);
+        setGroups(groupsData);
 
         isInitialized.current = true;
       } catch (error) {
@@ -97,22 +125,34 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
 
   useEffect(() => {
     if (isInitialized.current) {
-      console.log(cards);
-      saveDataToServer("cards", JSON.stringify(cards));
+      if (isLocalStorage) {
+        saveDataToLocalStorage("cards", JSON.stringify(cards));
+      } else {
+        saveDataToServer("cards", JSON.stringify(cards));
+      }
     }
   }, [cards]);
 
   useEffect(() => {
     if (isInitialized.current) {
-      saveDataToServer("groups", JSON.stringify(groups));
+      if (isLocalStorage) {
+        saveDataToLocalStorage("groups", JSON.stringify(groups));
+      } else {
+        saveDataToServer("groups", JSON.stringify(groups));
+      }
     }
   }, [groups]);
 
   useEffect(() => {
     if (isInitialized.current) {
-      saveDataToServer("tags", JSON.stringify(tags));
+      if (isLocalStorage) {
+        saveDataToLocalStorage("tags", JSON.stringify(tags));
+      } else {
+        saveDataToServer("tags", JSON.stringify(tags));
+      }
     }
   }, [tags]);
+
   return (
     <AppContext.Provider
       value={{
