@@ -73,7 +73,7 @@ const FlipCard: React.FC<FlipCardProps> = ({
   return (
     <>
       <motion.div
-        className="w-full max-w-[60vw] h-[50svh] aspect-[3/2] perspective-1000"
+        className="w-full max-w-[60vw] h-[40svh] aspect-[3/2] perspective-1000"
         whileHover={{ scale: 1.05 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
